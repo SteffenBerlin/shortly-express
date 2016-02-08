@@ -1,15 +1,15 @@
 var express = require('express');
-var util = require('./lib/utility');
+var util = require('./lib/utility'); // isValidUrl and getUrlTitle functions
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
 
 
-var db = require('./app/config');
-var Users = require('./app/collections/users');
-var User = require('./app/models/user');
-var Links = require('./app/collections/links');
-var Link = require('./app/models/link');
-var Click = require('./app/models/click');
+var db = require('./app/config'); // bookshelf/knex stuff, schemas for urls table and clicks table
+var Users = require('./app/collections/users'); // Users = new db.Collection(); Users.model = User. db is same as in here.
+var User = require('./app/models/user'); // User = db.Model.extend({});
+var Links = require('./app/collections/links'); // Links = new db.Collection(); Links.model = Link;
+var Link = require('./app/models/link'); // Link = db.Model.extend({...}); tableName: 'urls'
+var Click = require('./app/models/click'); // Click = db.Model.extend({...}); tableName: 'clicks'
 
 var app = express();
 
@@ -22,25 +22,25 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
-
-app.get('/', 
+//res.render('index') knows to look in the /views folder for something named index, because we specified a 'views' folder above
+app.get('/',
 function(req, res) {
   res.render('index');
 });
 
-app.get('/create', 
+app.get('/create',
 function(req, res) {
   res.render('index');
 });
 
-app.get('/links', 
+app.get('/links',
 function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
   });
 });
 
-app.post('/links', 
+app.post('/links',
 function(req, res) {
   var uri = req.body.url;
 
