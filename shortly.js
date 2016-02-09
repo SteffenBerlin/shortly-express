@@ -107,6 +107,12 @@ app.post('/login', function(req, res){
   });
 });
 
+app.post('/logout', function(req, res){
+  console.log('this is the logout post: ', req);
+  req.session.username = undefined;
+  res.redirect('/login');
+});
+
 app.post('/links',
 function(req, res) {
   var uri = req.body.url;
