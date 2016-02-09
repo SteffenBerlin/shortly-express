@@ -23,15 +23,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
-
-// app.use(session.cookieParser('shhhh, very secret'));
-// app.use(session({
-//   secret: "shh, secret",
-//   resave: false,
-//   saveUninitialized: true,
-//   cookie: {secure: false}
-// }));
-
 app.get('/login',
 function(req, res) {
   res.render('login');
@@ -42,7 +33,6 @@ function(req, res) {
   res.render('signup');
 });
 
-//res.render('index') knows to look in the /views folder for something named index, because we specified a 'views' folder above
 app.get('/',
 function(req, res) {
   if (req.session === undefined || req.session.username === undefined) {
@@ -73,18 +63,12 @@ function(req, res) {
 });
 
 app.post('/signup', function(req, res){
-  console.log("-------------> received post request to /signup, req.body:", req.body);
   var username = req.body.username;
   var password = req.body.password;
   //if username exists
     //make user choose different name
   //else
     //create new user
-
-  // new User({
-  //   'username': username,
-  //   'password': password
-  // });
 
   Users.create({
     username: username,
@@ -94,42 +78,6 @@ app.post('/signup', function(req, res){
     console.log(newUser);
     res.send(200, newUser);
   });
-
-
-
-
-  // new User({
-  //   username: username,
-  //   password: password
-  // }).fetch().then(function(found) {
-  //   if (found) {
-  //     res.send(200, found.attributes);
-  //   } else {
-  //     Users.create();
-
-
-
-  //     util.getUrlTitle(uri, function(err, title) {
-  //       if (err) {
-  //         console.log('Error reading URL heading: ', err);
-  //         return res.send(404);
-  //       }
-
-  //       Links.create({
-  //         url: uri,
-  //         title: title,
-  //         baseUrl: req.headers.origin
-  //       })
-  //       .then(function(newLink) {
-  //         res.send(200, newLink);
-  //       });
-  //     });
-
-  //   }
-  // });
-
-
-
 
 });
 
