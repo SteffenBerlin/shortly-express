@@ -69,14 +69,13 @@ app.post('/signup', function(req, res){
     //make user choose different name
   //else
     //create new user
-
   Users.create({
     username: username,
     password: password
   })
   .then(function(newUser) {
     console.log(newUser);
-    res.send(200, newUser);
+    res.redirect('/');
   });
 
 });
