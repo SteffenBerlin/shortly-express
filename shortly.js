@@ -23,6 +23,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
+app.use(session({
+  secret: 'trash cat',
+  resave: false,
+  saveUninitialized: false
+}));
+
 app.get('/login',
 function(req, res) {
   res.render('login');
@@ -74,6 +80,7 @@ app.post('/signup', function(req, res){
     password: password
   })
   .then(function(newUser) {
+    req.session.username = username;
     res.redirect('/');
   });
 
@@ -89,6 +96,7 @@ app.post('/login', function(req, res){
     if (found) {
       // successful login
       // TODO: create a new session with this user
+      req.session.username = username;
       res.redirect('/');
     } else {
       // invalid login
@@ -97,7 +105,6 @@ app.post('/login', function(req, res){
       res.redirect('/login');
     }
   });
-
 });
 
 app.post('/links',
