@@ -134,14 +134,16 @@ function(req, res) {
           return res.send(404);
         }
 
-        console.log("Users: ", Users);
+        // console.log("Users: ", Users);
         console.log("session username", req.session.username);
-        console.log("Users.where", Users.where({username: "steffen"}));
-        console.log("db('users').where", db('users').where({username: "steffen"}));
+        // console.log("Users.where", Users.where({username: "steffen"}));
+        // console.log("db('users').where", db('users').where({username: "steffen"}));
 
-        db('users').where({username: req.session.username}).fetch().then(function(found) {
-          console.log("found.attributes.id was:", found.attributes.id);
-          var userId = found.attributes.id;
+        Users.where('username', req.session.username).fetch().then(function(found) {
+          console.log("found object is:", found);
+          console.log("found.models");
+          console.log("found.models[0].id", found.models[0].id);
+          var userId = found.models[0].id;
           Links.create({
             url: uri,
             title: title,
