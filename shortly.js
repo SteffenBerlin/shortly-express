@@ -2,6 +2,7 @@ var express = require('express');
 var util = require('./lib/utility'); // isValidUrl and getUrlTitle functions
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 
 var db = require('./app/config'); // bookshelf/knex stuff, schemas for urls table and clicks table
@@ -22,10 +23,33 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
+
+// app.use(session.cookieParser('shhhh, very secret'));
+// app.use(session({
+//   secret: "shh, secret",
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: {secure: false}
+// }));
+
+app.get('/login',
+function(req, res) {
+  res.render('login');
+});
+
+// app.get('/signup',
+// function(req, res) {
+//   res.render('signup');
+// });
+
 //res.render('index') knows to look in the /views folder for something named index, because we specified a 'views' folder above
 app.get('/',
 function(req, res) {
-  res.render('index');
+  if (req.session === undefined || req.session.username === undefined) {
+    res.redirect('/login');
+  } else {
+    res.render('index');
+  }
 });
 
 app.get('/create',
