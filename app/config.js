@@ -16,7 +16,7 @@ db.knex.schema.hasTable('urls').then(function(exists) {
       link.string('code', 100);
       link.string('title', 255);
       link.integer('visits');
-      click.integer('userId');
+      link.integer('userId');
       link.timestamps();
     }).then(function (table) {
       console.log('Created Table', table);

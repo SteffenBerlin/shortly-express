@@ -59,9 +59,11 @@ function(req, res) {
 
 app.get('/links',
 function(req, res) {
+  console.log("heard a get request for /links, req.body:", req.body);
   if (req.session === undefined || req.session.username === undefined) {
     res.redirect('/login');
   } else {
+
     Links.reset().fetch().then(function(links) {
       res.send(200, links.models);
     });
@@ -132,14 +134,27 @@ function(req, res) {
           return res.send(404);
         }
 
-        Links.create({
-          url: uri,
-          title: title,
-          baseUrl: req.headers.origin
-        })
-        .then(function(newLink) {
-          res.send(200, newLink);
+        console.log("Users: ", Users);
+        console.log("session username", req.session.username);
+        console.log("Users.where", Users.where({username: "steffen"}));
+        console.log("db('users').where", db('users').where({username: "steffen"}));
+
+        db('users').where({username: req.session.username}).fetch().then(function(found) {
+          console.log("found.attributes.id was:", found.attributes.id);
+          var userId = found.attributes.id;
+          Links.create({
+            url: uri,
+            title: title,
+            baseUrl: req.headers.origin,
+            userId: userId
+          })
+          .then(function(newLink) {
+            res.send(200, newLink);
+          });
+
         });
+
+
       });
     }
   });
