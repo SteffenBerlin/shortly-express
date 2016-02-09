@@ -74,17 +74,17 @@ function(req, res) {
 
 app.post('/signup', function(req, res){
   var username = req.body.username;
-  var pwPlain = req.body.password;
+  var password = req.body.password;
   //if username exists
     //make user choose different name
   //else
     //create new user
-    new User({
-      'username': username,
-      'password': password
-    }).save().then(function() {
-      done();
-    });
+  new User({
+    'username': username,
+    'password': password
+  }).save().then(function() {
+    done();
+  });
 
 });
 
