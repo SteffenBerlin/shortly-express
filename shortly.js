@@ -73,18 +73,63 @@ function(req, res) {
 });
 
 app.post('/signup', function(req, res){
+  console.log("-------------> received post request to /signup, req.body:", req.body);
   var username = req.body.username;
   var password = req.body.password;
   //if username exists
     //make user choose different name
   //else
     //create new user
-  new User({
-    'username': username,
-    'password': password
-  }).save().then(function() {
-    done();
+
+  // new User({
+  //   'username': username,
+  //   'password': password
+  // });
+
+  Users.create({
+    username: username,
+    password: password
+  })
+  .then(function(newUser) {
+    console.log(newUser);
+    res.send(200, newUser);
   });
+
+
+
+
+  // new User({
+  //   username: username,
+  //   password: password
+  // }).fetch().then(function(found) {
+  //   if (found) {
+  //     res.send(200, found.attributes);
+  //   } else {
+  //     Users.create();
+
+
+
+  //     util.getUrlTitle(uri, function(err, title) {
+  //       if (err) {
+  //         console.log('Error reading URL heading: ', err);
+  //         return res.send(404);
+  //       }
+
+  //       Links.create({
+  //         url: uri,
+  //         title: title,
+  //         baseUrl: req.headers.origin
+  //       })
+  //       .then(function(newLink) {
+  //         res.send(200, newLink);
+  //       });
+  //     });
+
+  //   }
+  // });
+
+
+
 
 });
 
