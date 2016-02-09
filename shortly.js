@@ -37,10 +37,10 @@ function(req, res) {
   res.render('login');
 });
 
-// app.get('/signup',
-// function(req, res) {
-//   res.render('signup');
-// });
+app.get('/signup',
+function(req, res) {
+  res.render('signup');
+});
 
 //res.render('index') knows to look in the /views folder for something named index, because we specified a 'views' folder above
 app.get('/',
@@ -54,14 +54,22 @@ function(req, res) {
 
 app.get('/create',
 function(req, res) {
-  res.render('index');
+  if (req.session === undefined || req.session.username === undefined) {
+    res.redirect('/login');
+  } else {
+    res.render('index');
+  }
 });
 
 app.get('/links',
 function(req, res) {
-  Links.reset().fetch().then(function(links) {
-    res.send(200, links.models);
-  });
+  if (req.session === undefined || req.session.username === undefined) {
+    res.redirect('/login');
+  } else {
+    Links.reset().fetch().then(function(links) {
+      res.send(200, links.models);
+    });
+  }
 });
 
 app.post('/links',
