@@ -72,6 +72,22 @@ function(req, res) {
   }
 });
 
+app.post('/signup', function(req, res){
+  var username = req.body.username;
+  var pwPlain = req.body.password;
+  //if username exists
+    //make user choose different name
+  //else
+    //create new user
+    new User({
+      'username': username,
+      'password': password
+    }).save().then(function() {
+      done();
+    });
+
+});
+
 app.post('/links',
 function(req, res) {
   var uri = req.body.url;
