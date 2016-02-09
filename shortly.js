@@ -74,8 +74,28 @@ app.post('/signup', function(req, res){
     password: password
   })
   .then(function(newUser) {
-    console.log(newUser);
     res.redirect('/');
+  });
+
+});
+
+app.post('/login', function(req, res){
+  var username = req.body.username;
+  var password = req.body.password;
+  new User({
+    username: username,
+    password: password
+  }).fetch().then(function(found) {
+    if (found) {
+      // successful login
+      // TODO: create a new session with this user
+      res.redirect('/');
+    } else {
+      // invalid login
+      // redirect to login
+      console.log('Invalid login');
+      res.redirect('/login');
+    }
   });
 
 });
