@@ -59,7 +59,6 @@ function(req, res) {
 
 app.get('/links',
 function(req, res) {
-  console.log("heard a get request for /links, req.body:", req.body);
   if (req.session === undefined || req.session.username === undefined) {
     res.redirect('/login');
   } else {
@@ -110,7 +109,6 @@ app.post('/login', function(req, res){
 });
 
 app.post('/logout', function(req, res){
-  console.log('this is the logout post: ', req);
   req.session.username = undefined;
   res.redirect('/login');
 });
@@ -134,16 +132,10 @@ function(req, res) {
           return res.send(404);
         }
 
-        // console.log("Users: ", Users);
-        console.log("session username", req.session.username);
-        // console.log("Users.where", Users.where({username: "steffen"}));
-        // console.log("db('users').where", db('users').where({username: "steffen"}));
-
-        Users.where('username', req.session.username).fetch().then(function(found) {
-          console.log("found object is:", found);
-          console.log("found.models");
-          console.log("found.models[0].id", found.models[0].id);
-          var userId = found.models[0].id;
+        User.query('where', 'username', '=', req.session.username).fetch().then(function(model) {
+          console.log("model is:", model);
+          console.log("userId is:", model.attributes.id);
+          var userId = model.attributes.id;
           Links.create({
             url: uri,
             title: title,
@@ -153,10 +145,7 @@ function(req, res) {
           .then(function(newLink) {
             res.send(200, newLink);
           });
-
         });
-
-
       });
     }
   });
