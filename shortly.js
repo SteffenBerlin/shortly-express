@@ -62,10 +62,24 @@ function(req, res) {
   if (req.session === undefined || req.session.username === undefined) {
     res.redirect('/login');
   } else {
+    User.query('where', 'username', '=', req.session.username).fetch().then(function(model) {
+      var userId = model.attributes.id;
 
-    Links.reset().fetch().then(function(links) {
-      res.send(200, links.models);
+      Links.query('where', 'userId', '=', userId).fetch().then(function (links) {
+        console.log("links are:", links);
+        res.send(200, links.models);
+      });
+
+      // Links.reset().fetch().then(function(links) {
+      // });
+
+
+
     });
+
+
+
+
   }
 });
 
