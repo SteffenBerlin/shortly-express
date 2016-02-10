@@ -3,7 +3,7 @@ var util = require('./lib/utility'); // isValidUrl and getUrlTitle functions
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-
+var bcrypt = require('bcrypt');
 
 var db = require('./app/config'); // bookshelf/knex stuff, schemas for urls table and clicks table
 var Users = require('./app/collections/users'); // Users = new db.Collection(); Users.model = User. db is same as in here.
@@ -69,55 +69,52 @@ function(req, res) {
         console.log("links are:", links);
         res.send(200, links.models);
       });
-
       // Links.reset().fetch().then(function(links) {
       // });
-
-
-
     });
-
-
-
-
   }
 });
 
 app.post('/signup', function(req, res){
   var username = req.body.username;
   var password = req.body.password;
-  //if username exists
-    //make user choose different name
-  //else
-    //create new user
-  Users.create({
-    username: username,
-    password: password
-  })
-  .then(function(newUser) {
-    req.session.username = username;
-    res.redirect('/');
+  bcrypt.hash(password, 8, function (err, hash) {
+    if (err) {
+      console.log("error in bcrypt.hash:", err);
+    } else {
+      Users.create({
+        username: username,
+        password: hash
+      })
+      .then(function(newUser) {
+        req.session.username = username;
+        res.redirect('/');
+      });
+    }
   });
-
 });
 
 app.post('/login', function(req, res){
   var username = req.body.username;
   var password = req.body.password;
-  new User({
-    username: username,
-    password: password
-  }).fetch().then(function(found) {
-    if (found) {
-      // successful login
-      // TODO: create a new session with this user
-      req.session.username = username;
-      res.redirect('/');
-    } else {
-      // invalid login
-      // redirect to login
+
+  User.query('where', 'username', '=', username).fetch().then(function(model) {
+    if (!model) {
       console.log('Invalid login');
       res.redirect('/login');
+    } else {
+      var hashedPassword = model.attributes.password;
+      bcrypt.compare(password, hashedPassword, function (err, result) {
+        if (err) {
+          console.log("error in bcrypt.compare:", err);
+        } else if (result) {
+          req.session.username = username;
+          res.redirect('/');
+        } else {
+          console.log('Invalid login');
+          res.redirect('/login');
+        }
+      });
     }
   });
 });
